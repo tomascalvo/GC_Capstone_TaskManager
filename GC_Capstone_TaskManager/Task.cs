@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -389,6 +388,13 @@ namespace GC_Capstone_TaskManager
                 //Console.WriteLine($"{input} is not a {valueType}.");
                 return false;
             }
+        }
+
+        public static bool ValidateIntegerRange(string input, int minValue, int maxValue)
+        {
+            string regEx = $"[{minValue}-{maxValue}]";
+            bool isValid = ValidateWRegEx("integer", @"regEx", input);
+            return isValid;
         }
 
         public static bool ValidateWord(string input)
