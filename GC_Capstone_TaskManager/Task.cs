@@ -279,41 +279,95 @@ namespace GC_Capstone_TaskManager
                 {
                     Console.WriteLine(taskQueries[i - 1].Query);
                     string response = Console.ReadLine();
-                    if (i < 4)
+                    if (i == 3)
+                    {
+                        if (ValidateName(response))
+                        {
+                            properties[i].SetValue(newTask, response);
+                        }
+                        else if (!ValidateName(response))
+                        {
+                            while (!ValidateName(response))
+                            {
+                                Console.WriteLine("User input is not a valid name. Please enter a valid name.");
+                                response = Console.ReadLine();
+                            }
+                        }
+                        try
+                        {
+                            properties[i].SetValue(newTask, response);
+                        }
+                        catch
+                        {
+                            FormatException e;
+                        }
+                    }
+                    else if (i < 4)
                     {
                         properties[i].SetValue(newTask, response);
                     }
-                    if (i == 4)
+                    else if (i == 4)
                     {
+                        Console.WriteLine("Entering date conditional statement.");
                         DateTime responseDate = DateTime.Parse(response);
                         properties[i].SetValue(newTask, responseDate);
+                        Console.WriteLine("Date conditional statement complete.");
                     }
-                    if (i == 5)
-                    {
-                        string lowerCaseResponse = response.ToLower();
-                        bool responseBool;
-                        if (bool.TryParse(lowerCaseResponse, out bool result))
-                        {
-                            responseBool = result;
-                            properties[i].SetValue(newTask, responseBool);
-                        }
-                        else if (lowerCaseResponse == "yes")
-                        {
-                            responseBool = true;
-                            properties[i].SetValue(newTask, responseBool);
-                        }
-                        else if (lowerCaseResponse == "no")
-                        {
-                            responseBool = false;
-                            properties[i].SetValue(newTask, responseBool);
-                        }
-                    }
+                    //else if (i == 5)
+                    //{
+                    //    string lowerCaseResponse = response.ToLower();
+                    //    bool responseBool;
+                    //    if (bool.TryParse(lowerCaseResponse, out bool result))
+                    //    {
+                    //        responseBool = result;
+                    //        properties[i].SetValue(newTask, responseBool);
+                    //    }
+                    //    else if (lowerCaseResponse == "yes")
+                    //    {
+                    //        responseBool = true;
+                    //        properties[i].SetValue(newTask, responseBool);
+                    //    }
+                    //    else if (lowerCaseResponse == "no")
+                    //    {
+                    //        responseBool = false;
+                    //        properties[i].SetValue(newTask, responseBool);
+                    //    }
+                    //}
                 }
             }
             tasks.Add(newTask);
             Console.WriteLine($"\nThe task \"{newTask.title}\" has been added to the list.");
             PrintTaskProperties(newTask);
         }
+
+        public static bool ValidateWRegEx(string valueType, string regExString, string input)
+        {
+            Regex regEx = new Regex(regExString);
+
+            if (regEx.IsMatch(input))
+            {
+                //Console.WriteLine($"{input} is a {valueType}.");
+                return true;
+            }
+            else
+            {
+                //Console.WriteLine($"{input} is not a {valueType}.");
+                return false;
+            }
+        }
+
+        public static bool ValidateName(string input)
+        {
+            bool isValid = ValidateWRegEx("name", @"[A-Z]{1}[a-z]{0,29}", input);
+            return isValid;
+        }
+
+        public static bool ValidateDate(string input)
+        {
+            bool isValid = ValidateWRegEx("date", @"(([0][1-9])|([1-2][\d])|(3[01]))\/(([0][1-9])|([1][12]))\/(19|20)\d{2}", input);
+            return isValid;
+        }
+
         public static void RemoveTask(List<Task> tasks)
         {
             bool remove = AskYesOrNo("Would you like to remove a task from the list?");
