@@ -273,9 +273,9 @@ namespace GC_Capstone_TaskManager
             //Print the property queries, collect user response and assign the value of each response to a property of the object.
             properties[0].SetValue(newTask, tasks.Count + 1);
             properties[5].SetValue(newTask, false);
-            for (int i = 1; i < properties.Count; i++)
+            for (int i = 1; i < properties.Count - 1; i++)
             {
-                if (i < properties.Count)
+                if (i < properties.Count - 1)
                 {
                     Console.WriteLine(taskQueries[i - 1].Query);
                     string response = Console.ReadLine();
@@ -304,14 +304,49 @@ namespace GC_Capstone_TaskManager
                     }
                     else if (i < 4)
                     {
-                        properties[i].SetValue(newTask, response);
+                        if (ValidateWord(response))
+                        {
+                            properties[i].SetValue(newTask, response);
+                        }
+                        else if (!ValidateWord(response))
+                        {
+                            while (!ValidateWord(response))
+                            {
+                                Console.WriteLine("User input is not a valid word. Please enter a valid word.");
+                                response = Console.ReadLine();
+                            }
+                        }
+                        try
+                        {
+                            properties[i].SetValue(newTask, response);
+                        }
+                        catch
+                        {
+                            FormatException e;
+                        }
                     }
                     else if (i == 4)
                     {
-                        Console.WriteLine("Entering date conditional statement.");
-                        DateTime responseDate = DateTime.Parse(response);
-                        properties[i].SetValue(newTask, responseDate);
-                        Console.WriteLine("Date conditional statement complete.");
+                        if (ValidateDate(response))
+                        {
+                            properties[i].SetValue(newTask, response);
+                        }
+                        else if (!ValidateDate(response))
+                        {
+                            while (!ValidateDate(response))
+                            {
+                                Console.WriteLine("User input is not a valid date. Please enter a valid date.");
+                                response = Console.ReadLine();
+                            }
+                        }
+                        try
+                        {
+                            properties[i].SetValue(newTask, response);
+                        }
+                        catch
+                        {
+                            FormatException e;
+                        }
                     }
                     //else if (i == 5)
                     //{
@@ -354,6 +389,12 @@ namespace GC_Capstone_TaskManager
                 //Console.WriteLine($"{input} is not a {valueType}.");
                 return false;
             }
+        }
+
+        public static bool ValidateWord(string input)
+        {
+            bool isValid = ValidateWRegEx("name", @"([A-Z]|[a-z])\w+", input);
+            return isValid;
         }
 
         public static bool ValidateName(string input)
