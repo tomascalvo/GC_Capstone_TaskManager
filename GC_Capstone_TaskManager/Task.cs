@@ -326,25 +326,26 @@ namespace GC_Capstone_TaskManager
                     }
                     else if (i == 4)
                     {
+                        while (!ValidateDate(response))
+                            {
+                                Console.WriteLine("User input is not a valid date. Please enter a valid date (dd/mm/yyyy).");
+                                response = Console.ReadLine();
+                            }
                         if (ValidateDate(response))
                         {
                             properties[i].SetValue(newTask, response);
+                            Console.WriteLine($"Due date is {newTask.DueDate}.");
                         }
                         else if (!ValidateDate(response))
                         {
-                            while (!ValidateDate(response))
+                            try
                             {
-                                Console.WriteLine("User input is not a valid date. Please enter a valid date.");
-                                response = Console.ReadLine();
+                                properties[i].SetValue(newTask, response);
                             }
-                        }
-                        try
-                        {
-                            properties[i].SetValue(newTask, response);
-                        }
-                        catch
-                        {
-                            FormatException e;
+                            catch
+                            {
+                                FormatException e;
+                            }
                         }
                     }
                     //else if (i == 5)
